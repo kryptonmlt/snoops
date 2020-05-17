@@ -43,7 +43,7 @@ public class DockerWrapper {
           .split(" ");
       String url = "";
       if(hostUrl !=null && !hostUrl.isEmpty()){
-        url = "http://"+parts[4 + inc]+hostUrl;
+        url = "http://"+parts[4 + inc].replaceAll("_","-")+hostUrl;
       }
       containers.add(
           new DockerContainer(parts[0], parts[1], command, parts[2], parts[3], parts[4 + inc],
