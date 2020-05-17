@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Containers</title>
+  <script src="/jquery/js/jquery-3.4.1.min.js"></script>
+  <link rel="stylesheet"
+        href="/bootstrap/css/bootstrap.css">
+  <script src="/bootstrap/js/bootstrap.js"></script>
+  <script>
+
+    window.addEventListener("load", function () {
+      var buttons = document.getElementsByClassName("delete-button");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("click", function () {
+          $.ajax({
+            url: "/container/" + this.dataset.containerid + "/delete",
+            type: "DELETE",
+            success: function (result) {
+              location.reload();
+            }
+          });
+        });
+      }
+    });
+  </script>
+</head>
+<body>
+<div th:switch="${containers}">
+  <h2 th:case="null">No containers found on server</h2>
+  <div th:case="*">
+    <h2>Containers</h2>
+    <table border="1">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Image Name</th>
+        <th>Container Name</th>
+        <th>Actions</th>
+        <th>Started</th>
+        <th>Status</th>
+        <th>Unique Size</th>
+        <th>Virtual Size</th>
+        <th>Info</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="container : ${containers}">
+        <td th:text="${container.id}"></td>
+        <td th:text="${container.imageName}"></td>
+        <td th:if="${container.url == ''}" th:text="${container.containerName}"></td>
+        <td th:if="${container.url != ''}"><a th:href="${container.url}" th:text="${container.containerName}"></a></td>
+        <td>
+          <button
+              th:if="not ${#strings.containsIgnoreCase(container.imageName, 'traefik')} and not ${#strings.containsIgnoreCase(container.containerName, 'runner')} and not ${#strings.containsIgnoreCase(container.imageName, 'whoami')} and not ${#strings.containsIgnoreCase(container.imageName, 'snoops')}"
+              class="delete-button" type="button" th:data-containerId="${container.id}">
+            Delete
+          </button>
+        </td>
+        <td th:text="${container.started}"></td>
+        <td th:text="${container.status}"></td>
+        <td th:text="${container.uniqueSize}"></td>
+        <td th:text="${container.virtualSize}"></td>
+        <td>
+          <a th:href="@{/container/{id}/logs (id=${container.id})}">View Logs</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

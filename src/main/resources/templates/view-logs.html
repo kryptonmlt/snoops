@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Containers</title>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script>
+
+    function getDockerLogs(type) {
+      $.ajax({
+        url: "/container/[[${containerId}]]/logs/all?type=" + type,
+        type: "GET",
+        success: function (result) {
+          if (type == "docker") {
+            document.getElementById("docker-logs").innerText = result;
+          } else {
+            document.getElementById("log-content").innerText = result;
+          }
+        }
+      });
+    }
+
+    function getSelectedValue() {
+      return document.getElementById("apache-log").value;
+    }
+
+    window.addEventListener("load", function () {
+      getDockerLogs("docker");
+      getDockerLogs(getSelectedValue());
+      document.getElementById("refresh-button").addEventListener("click", function () {
+        getDockerLogs("docker");
+        getDockerLogs(getSelectedValue());
+      });
+    });
+  </script>
+</head>
+<body>
+<div>
+  <h1>Logs for [[${containerId}]]</h1>
+  <label for="apache-log">Choose a log:</label>
+  <select id="apache-log">
+    <option th:each="log : ${logs}" th:value="${log.name}">[[${log.name}]]</option>
+  </select>
+  <button id="refresh-button" type="button">Refresh</button>
+  <a th:href="@{/}">View all containers</a>
+  <h2>Other Logs:</h2>
+  <div id="log-content">
+  </div>
+  <h2>Docker Logs:</h2>
+  <span id="docker-logs">Loading..</span>
+</div>
+</body>
+</html>
