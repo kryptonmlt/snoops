@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
-  <title>Containers</title>
+  <title>Snoops: Container List</title>
   <script src="/jquery/js/jquery-3.4.1.min.js"></script>
   <link rel="stylesheet"
         href="/bootstrap/css/bootstrap.css">
@@ -29,7 +29,7 @@
 <div th:switch="${containers}">
   <h2 th:case="null">No containers found on server</h2>
   <div th:case="*">
-    <h2>Containers</h2>
+    <h2>Snoops: Containers Viewer</h2>
     <table border="1">
       <thead>
       <tr>
